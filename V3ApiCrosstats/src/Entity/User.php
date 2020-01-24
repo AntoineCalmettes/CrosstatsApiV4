@@ -44,10 +44,10 @@ class User implements UserInterface
      */
     private $roles;
 
-    public function __construct()
-    {
-        $this->roles = new ArrayCollection();
-    }
+    // public function __construct()
+    // {
+    //     $this->roles = new ArrayCollection();
+    // }
 
     public function getId(): ?int
     {
@@ -117,7 +117,7 @@ class User implements UserInterface
      * @return string[] The user roles
      */
     public function getRoles(){
-        return null;
+        return ['ROLE_USER'];
     }
 
   
