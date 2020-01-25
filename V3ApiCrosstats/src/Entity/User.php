@@ -53,7 +53,7 @@ class User implements UserInterface
      * @Groups({"detail"})
      * @Assert\Length(
      *      min = 6,
-     *      max = 20,
+     *      max = 150,
      *      minMessage = "Votre mot de passe doit contenir au minimun {{ limit }} caractères ",
      *      maxMessage = "Votre mot de passe doit contenir au maximun {{ limit }} caractères"
      * )
