@@ -12,7 +12,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @UniqueEntity("email")
+ * @UniqueEntity( fields={"email"},
+ *     errorPath="email",
+ *     message="Votre email est déja existant")
  */
 class User implements UserInterface
 {
@@ -49,9 +51,9 @@ class User implements UserInterface
      * @Groups({"detail"})
      * @Assert\Length(
      *      min = 6,
-     *      max = 50,
-     *      minMessage = "Your password must be at least {{ limit }} characters long",
-     *      maxMessage = "Your password cannot be longer than {{ limit }} characters"
+     *      max = 20,
+     *      minMessage = "Votre mot de passe doit contenir au minimun {{ limit }} caractères ",
+     *      maxMessage = "Votre mot de passe doit contenir au maximun {{ limit }} caractères"
      * )
      */
     private $password;
