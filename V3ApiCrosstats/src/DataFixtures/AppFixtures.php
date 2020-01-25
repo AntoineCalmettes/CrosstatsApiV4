@@ -77,6 +77,7 @@ class AppFixtures extends Fixture
             $user->setCellphone($this->faker->phoneNumber());
             $user->setPassword($this->encoder->encodePassword($user,"123"));
             $user->setEmail(strtolower($user->getFullName()."@gmail.com"));
+            $user->setCreateAt(new \Datetime('now'));
             $this->addReference("user".$i,$user);
             $userRoleId->setIdUser($user);
             $userRoleId->setIdRole($roleUser);
