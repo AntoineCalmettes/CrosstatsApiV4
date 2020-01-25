@@ -11,5 +11,13 @@ Exemple : #DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name?serve
 7.b yes
 
 
-php bin/console doctrine:fixtures:load
+8.php bin/console doctrine:fixtures:load
+
+9 .Si c'est la premiere fois que tu clone le pojet : 
+9.1 crée un dossier jwt dans config
+ tape cette commande dans le bash : 
+ 9.2 openssl genrsa -out config/jwt/private.pem -aes256 4096
+ 9.2.1 passphrase: admin
+9.3 openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
+9.3.1 admin
 symfony serve

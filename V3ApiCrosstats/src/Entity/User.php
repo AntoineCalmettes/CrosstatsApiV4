@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -16,28 +17,45 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"detail"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"detail"})
      */
     private $fullName;
 
     /**
      * @ORM\Column(type="string", length=255,unique=true)
+     * @Groups({"detail"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"detail"})
      */
     private $cellphone;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"detail"})
      */
     private $password;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserRoleId", mappedBy="idUser")
+     * @Groups({"detail"})
+     * 
+     */
+    private $userRoleIds;
+
+    public function __construct()
+    {
+        $this->userRoleIds = new ArrayCollection();
+    }
 
    
 
@@ -108,10 +126,9 @@ class User implements UserInterface
      * and populated in any number of different ways when the user object
      * is created.
      *
-     * @return string[] The user roles
      */
     public function getRoles(){
-         return ['ROLE_USER'];
+        return ['ne pas prendre en compte cette valeur'];
     }
 
   
@@ -143,6 +160,37 @@ class User implements UserInterface
      */
     public function eraseCredentials(){
         return null;
+    }
+
+    /**
+     * @return Collection|UserRoleId[]
+     */
+    public function getUserRoleIds(): Collection
+    {
+        return $this->userRoleIds;
+    }
+
+    public function addUserRoleId(UserRoleId $userRoleId): self
+    {
+        if (!$this->userRoleIds->contains($userRoleId)) {
+            $this->userRoleIds[] = $userRoleId;
+            $userRoleId->setIdUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserRoleId(UserRoleId $userRoleId): self
+    {
+        if ($this->userRoleIds->contains($userRoleId)) {
+            $this->userRoleIds->removeElement($userRoleId);
+            // set the owning side to null (unless already changed)
+            if ($userRoleId->getIdUser() === $this) {
+                $userRoleId->setIdUser(null);
+            }
+        }
+
+        return $this;
     }
 
 
