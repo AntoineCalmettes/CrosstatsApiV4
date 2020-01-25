@@ -32,6 +32,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255,unique=true)
      * @Groups({"detail"})
+     * @Assert\Unique
      * @Assert\Email(
      *     message = "The email is not a valid email."
      * )

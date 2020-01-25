@@ -2,14 +2,16 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Box;
 use App\Entity\Role;
 use App\Entity\User;
+use App\Entity\UserBoxId;
 use App\Entity\UserRoleId;
 use Faker\Factory as Factory2;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use Doctrine\Migrations\Version\Factory;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -50,9 +52,27 @@ class AppFixtures extends Fixture
         $roleAdmin = new Role();
         $roleAdmin->setLibelle("ROLE ADMIN");
         $this->manager->persist($roleAdmin);
+        $boxNewArea = new Box();
+        $boxEpsilon = new Box();
+        $boxNewArea->setName("Crossfit New Area");
+        $boxEpsilon->setName("Crossfit Epsilon");
+        $boxNewArea->setAdress($this->faker->address());
+        $boxEpsilon->setAdress($this->faker->address());
+        $boxNewArea->setCity($this->faker->city());
+        $boxEpsilon->setCity($this->faker->city());
+        $boxNewArea->setCodePostal($this->faker->postcode());
+        $boxEpsilon->setCodePostal($this->faker->postcode());
+        $boxNewArea->setSiret($this->faker->siret());
+        $boxEpsilon->setSiret($this->faker->siret());
+        $boxNewArea->setCertifate(true);
+        $boxEpsilon->setCertifate(false);
+        $this->manager->persist($boxEpsilon);
+        $this->manager->persist($boxNewArea);
         for($i=0;$i<10;$i++){
+           
             $user = new User();
             $userRoleId = new UserRoleId();
+            $userBoxId = new UserBoxId();
             $user->setFullName($this->faker->firstName());
             $user->setCellphone($this->faker->phoneNumber());
             $user->setPassword($this->encoder->encodePassword($user,"123"));
@@ -60,6 +80,15 @@ class AppFixtures extends Fixture
             $this->addReference("user".$i,$user);
             $userRoleId->setIdUser($user);
             $userRoleId->setIdRole($roleUser);
+            if ($i%2 == 1){
+                $userBoxId->setBoxId($boxNewArea);
+                $userBoxId->setUserId($user);
+            }else{
+                $userBoxId->setBoxId($boxEpsilon);
+                $userBoxId->setUserId($user);
+            }
+          
+            $this->manager->persist($userBoxId);
             $this->manager->persist($user);
             $this->manager->persist($userRoleId);
         }

@@ -84,7 +84,7 @@ class UserController extends AbstractController
        $json = $serializer->serialize($user,'json',['groups'=>'detail']);
       
     //    $json = $serializer->serialize($user,'json',['groups' => 'detail']);
-       return new JsonResponse($json,Response::HTTP_CREATED,[],true);
+       return new JsonResponse("Utilisateur crée avec succès",Response::HTTP_CREATED,[],true);
     }
 
     /**
