@@ -2,16 +2,18 @@
 
 namespace App\Controller;
 
-use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Entity\User;
+use App\Entity\UserBoxId;
 use App\Entity\UserRoleId;
+use App\Repository\BoxRepository;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use ApiPlatform\Core\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,15 +21,8 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserController extends AbstractController
 {
-        /**
-     * @Route("/", name="home",methods={"GET"})
-     */
-    public function home(UserRepository $userRepo,SerializerInterface $serializer)
-    {
-  
-       
-       return new JsonResponse("Welcome to api Crosstats, documentation to /api",Response::HTTP_OK,[],false);
-    }
+     
+      
     /**
      * @Route("/api/users", name="user",methods={"GET"})
      */
@@ -40,7 +35,7 @@ class UserController extends AbstractController
     }
 
        /**
-     * @Route("/api/user/{id}", name="user_show",methods={"GET"})
+     * @Route("/api/users/{email}", name="user_show",methods={"GET"})
      */
     public function show(User $user,SerializerInterface $serializer)
     {
@@ -48,8 +43,18 @@ class UserController extends AbstractController
        $json = $serializer->serialize($user,'json',['groups' => 'detail']);
        return new JsonResponse($json,Response::HTTP_OK,[],true);
     }
+
+      /**
+     * @Route("/api/users/id/{id}", name="user_show_id",methods={"GET"})
+     */
+    public function showId(User $user,SerializerInterface $serializer,$id,UserRepository $repo)
+    {
+       $user = $repo->findOneBy(['id'=>$id]);
+       $json = $serializer->serialize($user,'json',['groups' => 'detail']);
+       return new JsonResponse($json,Response::HTTP_OK,[],true);
+    }
   /**
-     * @Route("/api/user", name="user_delete",methods={"DELETE"})
+     * @Route("/api/users", name="user_delete",methods={"DELETE"})
      */
     public function delete(User $user,ObjectManager $manager)
     {
@@ -84,48 +89,18 @@ class UserController extends AbstractController
        $json = $serializer->serialize($user,'json',['groups'=>'detail']);
       
     //    $json = $serializer->serialize($user,'json',['groups' => 'detail']);
-       return new JsonResponse("Utilisateur crée avec succès",Response::HTTP_CREATED,["statutText"=>"Utilisateur crée avec succès"],true);
+       return new JsonResponse("Utilisateur crée avec succès",Response::HTTP_CREATED,[],true);
     }
 
     /**
-     * @Route("/api/user", name="user_update",methods={"PUT"})
+     * @Route("/api/users", name="user_update",methods={"PUT"})
      */
-    public function update(Request $request,UserRepository $userRepo,SerializerInterface $serializer,RoleRepository $roleRepo,UserPasswordEncoderInterface $encoder)
+    public function update(Request $request,User $user,SerializerInterface $serializer,ObjectManager $manager)
     {
-        $em = $this->getDoctrine()->getManager();
-        $UserRoleId = new UserRoleId();
-        $idUser = $request->request->get('id');
-        $email = $request->request->get('email');
-        $roles = $request->request->get('roles');
-
-        if(empty($idUser)){
-            return new JsonResponse("id introuvable",Response::HTTP_NO_CONTENT,[],true);
-        }
-        if(empty($email)){
-            return new JsonResponse("id introuvable",Response::HTTP_NO_CONTENT,[],true);
-        }
-      
-        if(empty($roles)){
-            return new JsonResponse("roles introuvable",Response::HTTP_NO_CONTENT,[],true);
-        }
-
-       $user = $userRepo->find($idUser);
-       if(empty($user)){
-        return new JsonResponse("user introuvable",Response::HTTP_NO_CONTENT,[],true);
-       }
-       foreach($roles as $role){
-           $roleObject = $roleRepo->find($role);
-           $UserRoleId = new UserRoleId();
-           $UserRoleId->setIdUser($user);
-           $UserRoleId->setIdRole($role);
-       }
-       $user->setEmail($email);
-       $em->persist($user);
-       $em->flush();
-       $em->persist($role);
-       $em->flush();
-       
-      
+       $data = $request->getContent();
+       $serializer->deserialize($data,User::class,'json',['object_to_populate'=>$user]);
+       $manager->persist($user);
+       $manager->flush();
        $json = $serializer->serialize($user,'json',['groups' => 'detail']);
        return new JsonResponse($json,Response::HTTP_OK,[],true);
     }
