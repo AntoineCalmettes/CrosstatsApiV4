@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Entity\UserRoleId;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,38 +35,52 @@ class UserController extends AbstractController
        return new JsonResponse($json,Response::HTTP_OK,[],true);
     }
 
+       /**
+     * @Route("/api/user/{id}", name="user_show",methods={"GET"})
+     */
+    public function show(User $user,SerializerInterface $serializer)
+    {
+  
+       $json = $serializer->serialize($user,'json',['groups' => 'detail']);
+       return new JsonResponse($json,Response::HTTP_OK,[],true);
+    }
+
     /**
      * @Route("/api/user", name="user_update",methods={"PUT"})
      */
     public function update(Request $request,UserRepository $userRepo,SerializerInterface $serializer,RoleRepository $roleRepo)
     {
-    //     $em = $this->getDoctrine()->getManager();
-    //     $idUser = $request->request->get('id');
-    //     $email = $request->request->get('email');
-    //     $roles = $request->request->get('roles');
+        $em = $this->getDoctrine()->getManager();
+        $idUser = $request->request->get('id');
+        $email = $request->request->get('email');
+        $roles = $request->request->get('roles');
 
-    //     if(empty($idUser)){
-    //         return new JsonResponse("id introuvable",Response::HTTP_NO_CONTENT,[],true);
-    //     }
-    //     if(empty($email)){
-    //         return new JsonResponse("id introuvable",Response::HTTP_NO_CONTENT,[],true);
-    //     }
+        if(empty($idUser)){
+            return new JsonResponse("id introuvable",Response::HTTP_NO_CONTENT,[],true);
+        }
+        if(empty($email)){
+            return new JsonResponse("id introuvable",Response::HTTP_NO_CONTENT,[],true);
+        }
       
-    //     if(empty($roles)){
-    //         return new JsonResponse("roles introuvable",Response::HTTP_NO_CONTENT,[],true);
-    //     }
+        if(empty($roles)){
+            return new JsonResponse("roles introuvable",Response::HTTP_NO_CONTENT,[],true);
+        }
 
-    //    $user = $userRepo->find($idUser);
-    //    if(empty($user)){
-    //     return new JsonResponse("user introuvable",Response::HTTP_NO_CONTENT,[],true);
-    //    }
-    //    foreach($roles as $role){
-    //        $roleObject = $roleRepo->find($role);
-    //        $user->addRole($roleObject);
-    //    }
-    //    $user->setEmail($email);
-    //    $em->persist($user);
-    //    $em->flush();
+       $user = $userRepo->find($idUser);
+       if(empty($user)){
+        return new JsonResponse("user introuvable",Response::HTTP_NO_CONTENT,[],true);
+       }
+       foreach($roles as $role){
+           $roleObject = $roleRepo->find($role);
+           $UserRoleId = new UserRoleId();
+           $UserRoleId->setIdUser($user);
+           $UserRoleId->setIdRole($role);
+       }
+       $user->setEmail($email);
+       $em->persist($user);
+       $em->flush();
+       $em->persist($role);
+       $em->flush();
        
       
     //    $json = $serializer->serialize($user,'json',['groups' => 'detail']);
