@@ -17,7 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class BoxsController extends AbstractController
 {
     /**
-     * @Route("/api/boxs", name="boxs",methods={"GET"})
+     * @Route("/api/boxs", name="boxs_list",methods={"GET"})
      */
     public function list(BoxRepository $boxRepo,SerializerInterface $serializer)
     {

@@ -24,7 +24,7 @@ class UserController extends AbstractController
      
       
     /**
-     * @Route("/api/users", name="user",methods={"GET"})
+     * @Route("/api/users", name="user-list",methods={"GET"})
      */
     public function list(UserRepository $userRepo,SerializerInterface $serializer)
     {

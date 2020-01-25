@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class RoleController extends AbstractController
 {
       /**
-     * @Route("/api/roles", name="list",methods={"GET"})
+     * @Route("/api/roles", name="list_role",methods={"GET"})
      */
     public function list(RoleRepository $roleRepository,SerializerInterface $serializer)
     {
