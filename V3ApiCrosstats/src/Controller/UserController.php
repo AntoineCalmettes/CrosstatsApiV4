@@ -35,7 +35,7 @@ class UserController extends AbstractController
     }
 
        /**
-     * @Route("/api/users/{email}", name="user_show",methods={"GET"})
+     * @Route("/api/users/email/{email}", name="user_show",methods={"GET"})
      */
     public function show(User $user,SerializerInterface $serializer)
     {
@@ -45,7 +45,7 @@ class UserController extends AbstractController
     }
 
       /**
-     * @Route("/api/users/id/{id}", name="user_show_id",methods={"GET"})
+     * @Route("/api/users/{id}", name="user_show_id",methods={"GET"})
      */
     public function showId(User $user,SerializerInterface $serializer,$id,UserRepository $repo)
     {
