@@ -70,7 +70,7 @@ class UserController extends AbstractController
         // $password = $request->request->get('password')   ;
         $user = $serializer->deserialize($data,User::class,'json');
         $error = $validator->validate($user);
-        if(count($error) > 0){
+        if(count(array($error)) > 1){
            return $this->json($error,400);
         }
         $em->persist($user);
@@ -79,7 +79,7 @@ class UserController extends AbstractController
        $json = $serializer->serialize($user,'json',['groups'=>'detail']);
       
     //    $json = $serializer->serialize($user,'json',['groups' => 'detail']);
-       return new JsonResponse("ok",Response::HTTP_OK,[],false);
+       return new JsonResponse($json,Response::HTTP_OK,[],true);
     }
 
     /**
