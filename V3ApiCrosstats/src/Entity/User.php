@@ -63,9 +63,15 @@ class User implements UserInterface
      */
     private $userRoleIds;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserBoxId", mappedBy="userId")
+     */
+    private $userBoxIds;
+
     public function __construct()
     {
         $this->userRoleIds = new ArrayCollection();
+        $this->userBoxIds = new ArrayCollection();
     }
 
    
@@ -198,6 +204,37 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($userRoleId->getIdUser() === $this) {
                 $userRoleId->setIdUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserBoxId[]
+     */
+    public function getUserBoxIds(): Collection
+    {
+        return $this->userBoxIds;
+    }
+
+    public function addUserBoxId(UserBoxId $userBoxId): self
+    {
+        if (!$this->userBoxIds->contains($userBoxId)) {
+            $this->userBoxIds[] = $userBoxId;
+            $userBoxId->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserBoxId(UserBoxId $userBoxId): self
+    {
+        if ($this->userBoxIds->contains($userBoxId)) {
+            $this->userBoxIds->removeElement($userBoxId);
+            // set the owning side to null (unless already changed)
+            if ($userBoxId->getUserId() === $this) {
+                $userBoxId->setUserId(null);
             }
         }
 

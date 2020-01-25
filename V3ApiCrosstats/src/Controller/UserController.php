@@ -66,6 +66,7 @@ class UserController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
         $data = $request->getContent();
+        
         // $roles = $request->request->get('roles');
         // $password = $request->request->get('password')   ;
         $user = $serializer->deserialize($data,User::class,'json');
@@ -75,11 +76,15 @@ class UserController extends AbstractController
         }
         $em->persist($user);
         $em->flush();
-
+        $UserRoleId = new UserRoleId();
+        $UserRoleId->setIdRole($roleRepo->findOneBy(['libelle'=>'ROLE USER']));
+        $UserRoleId->setIdUser($user);
+        $em->persist($UserRoleId);
+        $em->flush();
        $json = $serializer->serialize($user,'json',['groups'=>'detail']);
       
     //    $json = $serializer->serialize($user,'json',['groups' => 'detail']);
-       return new JsonResponse($json,Response::HTTP_OK,[],true);
+       return new JsonResponse($json,Response::HTTP_CREATED,[],true);
     }
 
     /**
@@ -88,6 +93,7 @@ class UserController extends AbstractController
     public function update(Request $request,UserRepository $userRepo,SerializerInterface $serializer,RoleRepository $roleRepo,UserPasswordEncoderInterface $encoder)
     {
         $em = $this->getDoctrine()->getManager();
+        $UserRoleId = new UserRoleId();
         $idUser = $request->request->get('id');
         $email = $request->request->get('email');
         $roles = $request->request->get('roles');
