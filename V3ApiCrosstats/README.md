@@ -10,10 +10,7 @@ Exemple : #DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name?serve
 8. php bin/console doctrine:database:create
 9.a php bin/console doctrine:migrations:migrate
 9.b yes
-
-
 10.php bin/console doctrine:fixtures:load
-
 11 .Si c'est la premiere fois que tu clone le pojet : 
 11.1 crée un dossier jwt dans config
  tape cette commande dans le bash : 
