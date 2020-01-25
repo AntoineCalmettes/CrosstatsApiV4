@@ -66,6 +66,7 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\UserBoxId", mappedBy="userId")
+     * @Groups({"detail"})
      */
     private $userBoxIds;
 
