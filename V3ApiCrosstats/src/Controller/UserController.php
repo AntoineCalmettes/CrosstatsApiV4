@@ -13,6 +13,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class UserController extends AbstractController
 {
+        /**
+     * @Route("/", name="home",methods={"GET"})
+     */
+    public function home(UserRepository $userRepo,SerializerInterface $serializer)
+    {
+  
+       
+       return new JsonResponse("Welcome to api Crosstats",Response::HTTP_OK,[],false);
+    }
     /**
      * @Route("/api/users", name="user",methods={"GET"})
      */

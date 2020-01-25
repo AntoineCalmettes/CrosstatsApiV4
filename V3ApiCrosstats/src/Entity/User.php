@@ -39,15 +39,9 @@ class User implements UserInterface
      */
     private $password;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Role", mappedBy="user")
-     */
-    private $roles;
+   
 
-    public function __construct()
-    {
-        $this->roles = new ArrayCollection();
-    }
+  
 
     public function getId(): ?int
     {
@@ -117,7 +111,7 @@ class User implements UserInterface
      * @return string[] The user roles
      */
     public function getRoles(){
-         return $this->roles;
+         return ['ROLE_USER'];
     }
 
   
@@ -151,23 +145,5 @@ class User implements UserInterface
         return null;
     }
 
-    public function addRole(Role $role): self
-    {
-        if (!$this->roles->contains($role)) {
-            $this->roles[] = $role;
-            $role->addUser($this);
-        }
 
-        return $this;
-    }
-
-    public function removeRole(Role $role): self
-    {
-        if ($this->roles->contains($role)) {
-            $this->roles->removeElement($role);
-            $role->removeUser($this);
-        }
-
-        return $this;
-    }
 }

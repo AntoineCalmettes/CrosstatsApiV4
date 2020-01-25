@@ -30,7 +30,6 @@ class AppFixtures extends Fixture
     {
        $this->manager=$manager;
         $this->loadUser();
-        $this->loadRole();
         $manager->flush();
     }
 
