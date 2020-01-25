@@ -79,6 +79,8 @@ class UserController extends AbstractController
         if(count(array($error)) > 1){
            return $this->json($error,400);
         }
+        $user->setCreateAt(new \Datetime('now'));
+        $user->setPassword($encoder->encodePassword($user,$user->getPassword()));
         $em->persist($user);
         $em->flush();
         $UserRoleId = new UserRoleId();

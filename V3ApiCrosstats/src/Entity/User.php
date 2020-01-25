@@ -73,6 +73,11 @@ class User implements UserInterface
      */
     private $userBoxIds;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $createAt;
+
     public function __construct()
     {
         $this->userRoleIds = new ArrayCollection();
@@ -242,6 +247,18 @@ class User implements UserInterface
                 $userBoxId->setUserId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreateAt(): ?\DateTimeInterface
+    {
+        return $this->createAt;
+    }
+
+    public function setCreateAt(?\DateTimeInterface $createAt): self
+    {
+        $this->createAt = $createAt;
 
         return $this;
     }
