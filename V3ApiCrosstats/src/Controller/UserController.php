@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Entity\User;
 use App\Entity\UserRoleId;
 use App\Repository\RoleRepository;
@@ -61,48 +62,20 @@ class UserController extends AbstractController
     /**
      * @Route("/api/create/user", name="user_create_anonymous",methods={"POST"})
      */
-    public function create(Request $request,UserRepository $userRepo,SerializerInterface $serializer,RoleRepository $roleRepo,UserPasswordEncoderInterface $encoder,EntityManagerInterface $em)
+    public function create(Request $request,UserRepository $userRepo,SerializerInterface $serializer,RoleRepository $roleRepo,UserPasswordEncoderInterface $encoder,EntityManagerInterface $em,ValidatorInterface $validator)
     {
         $em = $this->getDoctrine()->getManager();
         $data = $request->getContent();
         // $roles = $request->request->get('roles');
         // $password = $request->request->get('password')   ;
         $user = $serializer->deserialize($data,User::class,'json');
+        $error = $validator->validate($user);
+        if(count($error) > 0){
+           return $this->json($error,400);
+        }
         $em->persist($user);
         $em->flush();
-    //     if(empty($password)){
-    //         return new JsonResponse("password not found",Response::HTTP_NO_CONTENT,[],true);
-    //     }
-      
-    //     if(empty($email)){
-    //         return new JsonResponse("id introuvable",Response::HTTP_NO_CONTENT,[],true);
-    //     }
-      
-    //     if(empty($roles)){
-    //         return new JsonResponse("roles introuvable",Response::HTTP_NO_CONTENT,[],true);
-    //     }
 
-    //    $user = new User();
-    //    if(empty($roles)){
-    //     $UserRoleId = new UserRoleId();
-    //     $UserRoleId->setIdUser($user);
-    //     $roleUser = 'ROLE USER';
-    //     $UserRoleId->setIdRole($roleRepo->findOneBy(['libelle'=>$roleUser]));
-    //    }else {
-    //     foreach($roles as $role){
-    //         $roleObject = $roleRepo->find($role);
-    //         $UserRoleId = new UserRoleId();
-    //         $UserRoleId->setIdUser($user);
-    //         $UserRoleId->setIdRole($role);
-    //     }
-    //    }
-      
-    //    $user->setEmail($email);
-    //    $user->setPassword($encoder->encodePassword($user,$password));
-    //    $em->persist($user);
-    //    $em->flush();
-    //    $em->persist($role);
-    //    $em->flush();
        
       
     //    $json = $serializer->serialize($user,'json',['groups' => 'detail']);
