@@ -7,11 +7,14 @@ use App\Entity\UserRoleId;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserController extends AbstractController
 {
@@ -44,11 +47,72 @@ class UserController extends AbstractController
        $json = $serializer->serialize($user,'json',['groups' => 'detail']);
        return new JsonResponse($json,Response::HTTP_OK,[],true);
     }
+  /**
+     * @Route("/api/user", name="user_delete",methods={"DELETE"})
+     */
+    public function delete(User $user,ObjectManager $manager)
+    {
+  
+       $manager->remove($user);
+       return new JsonResponse("suppression de l'utilisateur réussis",Response::HTTP_OK,[],true);
+    }
+
+
+    /**
+     * @Route("/api/create/user", name="user_create_anonymous",methods={"POST"})
+     */
+    public function create(Request $request,UserRepository $userRepo,SerializerInterface $serializer,RoleRepository $roleRepo,UserPasswordEncoderInterface $encoder,EntityManagerInterface $em)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $data = $request->getContent();
+        // $roles = $request->request->get('roles');
+        // $password = $request->request->get('password')   ;
+        $user = $serializer->deserialize($data,User::class,'json');
+        $em->persist($user);
+        $em->flush();
+    //     if(empty($password)){
+    //         return new JsonResponse("password not found",Response::HTTP_NO_CONTENT,[],true);
+    //     }
+      
+    //     if(empty($email)){
+    //         return new JsonResponse("id introuvable",Response::HTTP_NO_CONTENT,[],true);
+    //     }
+      
+    //     if(empty($roles)){
+    //         return new JsonResponse("roles introuvable",Response::HTTP_NO_CONTENT,[],true);
+    //     }
+
+    //    $user = new User();
+    //    if(empty($roles)){
+    //     $UserRoleId = new UserRoleId();
+    //     $UserRoleId->setIdUser($user);
+    //     $roleUser = 'ROLE USER';
+    //     $UserRoleId->setIdRole($roleRepo->findOneBy(['libelle'=>$roleUser]));
+    //    }else {
+    //     foreach($roles as $role){
+    //         $roleObject = $roleRepo->find($role);
+    //         $UserRoleId = new UserRoleId();
+    //         $UserRoleId->setIdUser($user);
+    //         $UserRoleId->setIdRole($role);
+    //     }
+    //    }
+      
+    //    $user->setEmail($email);
+    //    $user->setPassword($encoder->encodePassword($user,$password));
+    //    $em->persist($user);
+    //    $em->flush();
+    //    $em->persist($role);
+    //    $em->flush();
+       
+      
+    //    $json = $serializer->serialize($user,'json',['groups' => 'detail']);
+       return new JsonResponse("ok",Response::HTTP_OK,[],false);
+    }
 
     /**
      * @Route("/api/user", name="user_update",methods={"PUT"})
      */
-    public function update(Request $request,UserRepository $userRepo,SerializerInterface $serializer,RoleRepository $roleRepo)
+    public function update(Request $request,UserRepository $userRepo,SerializerInterface $serializer,RoleRepository $roleRepo,UserPasswordEncoderInterface $encoder)
     {
         $em = $this->getDoctrine()->getManager();
         $idUser = $request->request->get('id');
@@ -83,7 +147,7 @@ class UserController extends AbstractController
        $em->flush();
        
       
-    //    $json = $serializer->serialize($user,'json',['groups' => 'detail']);
-    //    return new JsonResponse($json,Response::HTTP_OK,[],true);
+       $json = $serializer->serialize($user,'json',['groups' => 'detail']);
+       return new JsonResponse($json,Response::HTTP_OK,[],true);
     }
 }
