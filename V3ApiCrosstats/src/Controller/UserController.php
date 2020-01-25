@@ -76,7 +76,7 @@ class UserController extends AbstractController
         $em->persist($user);
         $em->flush();
 
-       
+       $json = $serializer->serialize($user,'json',['groups'=>'detail']);
       
     //    $json = $serializer->serialize($user,'json',['groups' => 'detail']);
        return new JsonResponse("ok",Response::HTTP_OK,[],false);
