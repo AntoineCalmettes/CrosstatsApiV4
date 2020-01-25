@@ -2,15 +2,17 @@
 
 namespace App\Entity;
 
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @UniqueEntity("email")
  */
 class User implements UserInterface
 {
@@ -32,10 +34,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255,unique=true)
      * @Groups({"detail"})
-     * @Assert\Unique
-     * @Assert\Email(
-     *     message = "The email is not a valid email."
-     * )
+     * @Assert\Email
      */
     private $email;
 
