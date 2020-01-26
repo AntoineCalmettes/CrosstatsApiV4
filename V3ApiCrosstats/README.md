@@ -10,8 +10,7 @@ Exemple : #DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name?serve
 7.a php bin/console doctrine:migrations:migrate
 7.b yes
 
-composer req --dev make doctrine/doctrine-fixtures-bundle
-composer req --dev fzaninotto/faker
+
 8.php bin/console doctrine:fixtures:load
 coucou
 9 .Si c'est la premiere fois que tu clone le pojet : 

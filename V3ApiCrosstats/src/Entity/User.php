@@ -78,6 +78,13 @@ class User implements UserInterface
      */
     private $createAt;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $size;
+
+
+
     public function __construct()
     {
         $this->userRoleIds = new ArrayCollection();
@@ -262,6 +269,19 @@ class User implements UserInterface
 
         return $this;
     }
+
+    public function getSize(): ?int
+    {
+        return $this->size;
+    }
+
+    public function setSize(?int $size): self
+    {
+        $this->size = $size;
+
+        return $this;
+    }
+
 
 
 }

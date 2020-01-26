@@ -18,7 +18,7 @@ class UserBoxId
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Box", inversedBy="userBoxIds")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Box", inversedBy="userBoxIds",cascade={"persist"})
      * @Groups({"detail"})
      */
     private $boxId;
